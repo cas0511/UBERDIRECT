@@ -1,0 +1,49 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32616.157
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PH.UberConnect", "PH.UberConnect\PH.UberConnect.csproj", "{90D39705-7429-4405-B5E2-6815CC190C0E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PH.UberConnect.Api", "PH.UberConnect.Api\PH.UberConnect.Api.csproj", "{76460157-9751-4B6E-B2DE-DF3166AF2DF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PH.UberConnect.Core", "PH.UberConnect.Core\PH.UberConnect.Core.csproj", "{F2F0FBAC-49C8-417C-8B06-A0ECA4C5A9C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PH.UberConnect.Web", "PH.UberConnect.Web\PH.UberConnect.Web.csproj", "{52277803-EE0E-41F6-8DFC-7DABC095D07B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PH.UberConnect.UnitTesting", "PH.UberConnect.UnitTesting\PH.UberConnect.UnitTesting.csproj", "{772EB4E1-0B02-488B-BB8F-89761F7887BD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90D39705-7429-4405-B5E2-6815CC190C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D39705-7429-4405-B5E2-6815CC190C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D39705-7429-4405-B5E2-6815CC190C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D39705-7429-4405-B5E2-6815CC190C0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76460157-9751-4B6E-B2DE-DF3166AF2DF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76460157-9751-4B6E-B2DE-DF3166AF2DF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76460157-9751-4B6E-B2DE-DF3166AF2DF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76460157-9751-4B6E-B2DE-DF3166AF2DF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2F0FBAC-49C8-417C-8B06-A0ECA4C5A9C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2F0FBAC-49C8-417C-8B06-A0ECA4C5A9C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2F0FBAC-49C8-417C-8B06-A0ECA4C5A9C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2F0FBAC-49C8-417C-8B06-A0ECA4C5A9C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52277803-EE0E-41F6-8DFC-7DABC095D07B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52277803-EE0E-41F6-8DFC-7DABC095D07B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52277803-EE0E-41F6-8DFC-7DABC095D07B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52277803-EE0E-41F6-8DFC-7DABC095D07B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{772EB4E1-0B02-488B-BB8F-89761F7887BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{772EB4E1-0B02-488B-BB8F-89761F7887BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{772EB4E1-0B02-488B-BB8F-89761F7887BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{772EB4E1-0B02-488B-BB8F-89761F7887BD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {386EA166-7AB5-4017-8994-0603EA0CD31D}
+	EndGlobalSection
+EndGlobal

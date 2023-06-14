@@ -1,0 +1,302 @@
+﻿@using PH.UberConnect.Core.Enums;
+@model ListDeliveriesViewModel
+@{
+  var cancelOnlyThoseStatus = new List<string> { "pending", "dropoff", "pickup_complete", "pickup" };
+}
+
+@if (Model.HasError)
+{
+  <div class="row">
+    <div class="col-12">
+      <div class="alert alert-danger">
+        @Model.ErrorMessage
+      </div>
+    </div>
+  </div>
+}
+
+<div class="row my-3">
+  <div class="col-8">
+    <a class="btn btn-secondary" href="/Home/Index">INICIO</a>
+    <a class="btn btn-warning" onclick="location.reload()">Refrescar</a>
+  </div>
+
+  <div class="col-4">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label">Tiempo estimado</label>
+            <div class="input-group">
+              <input id="minutosDTInput" type="number" class="form-control" value="@Model.Store.MinutosDT">
+              <button type="button" class="btn btn-outline-info"
+                onclick="updateMinutosDT('@Model.Store.CodRest')">Actualizar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <div class="card">
+      @switch (Model.DeliveryFilter)
+      {
+        case DeliveryFilter.OnGoing:
+          <h5 class="card-header">Solicitudes de ENTREGA activas - @Model.Store.Descripcion</h5>
+          break;
+        case DeliveryFilter.Delivered:
+          <h5 class="card-header">Solicitudes de ENTREGA realizadas - @Model.Store.Descripcion</h5>
+          break;
+        case DeliveryFilter.Canceled:
+        default:
+          <h5 class="card-header">Solicitudes de ENTREGA canceladas - @Model.Store.Descripcion</h5>
+          break;
+      }
+
+      <div class="card-body">
+        @if (Model.Deliveries.Count > 0)
+        {
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Id factura</th>
+                <th scope="col">Num factura call</th>
+                <th scope="col">Fecha creación</th>
+                <th scope="col">Fecha llegada (Mot.)</th>
+                <th scope="col">Menos de 5 min</th>
+                <th scope="col">Estado</th>
+                <th scope="col">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach (var deliveryItem in Model.Deliveries)
+              {
+                <tr>
+                  <th scope="row">@deliveryItem.Delivery.manifest.reference</th>
+                  <th scope="row">@deliveryItem.NumFacturaCall</th>
+                  <td>@deliveryItem.Delivery.created.AddHours(-6).ToString("hh:mm tt")</td>
+                  <td>@deliveryItem.Delivery.pickup_ready.AddHours(-6).ToString("hh:mm tt")</td>
+                  <td>
+                    @if (deliveryItem.Delivery.courier_imminent)
+                    {
+                      <span class="badge bg-success">Si</span>
+                    }
+                    else
+                    {
+                      <span class="badge bg-danger">No</span>
+                    }
+                  </td>
+                  <td>@Html.Raw(Model.GetStatusHtmlElement(deliveryItem.Delivery.status))</td>
+                  <td>
+                    @if (cancelOnlyThoseStatus.Contains(deliveryItem.Delivery.status))
+                    {
+                      <!-- Button trigger modal -->
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#cancelDeliveryModal" onclick="setDeliveryId('@deliveryItem.Delivery.id')">
+                        Cancelar
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        }
+        else
+        {
+          <h6>No hay entregas para mostrar en esta tienda</h6>
+        }
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row my-3">
+  <div class="col-12">
+    <a class="btn btn-primary"
+      href="@Url.Action("ListDeliveries", "Home", new {storeId = Model.Store.CodRest, filter = 0})">
+      ENTREGAS activas
+    </a>
+    <a class="btn btn-danger"
+      href="@Url.Action("ListDeliveries", "Home", new {storeId = Model.Store.CodRest, filter = 1})">
+      ENTREGAS canceladas
+    </a>
+    <a class="btn btn-success"
+      href="@Url.Action("ListDeliveries", "Home", new {storeId = Model.Store.CodRest, filter = 2})">
+      ENTREGAS completadas
+    </a>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="cancelDeliveryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Cancelar ENTREGA</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <p>¿Está seguro(a) de cancelar esta entrega?</p>
+            <p>Por favor, ingresa el motivo de la cancelación y la persona a cargo.</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label" for="txtReasonCancellation">Motivo</label>
+            <textarea class="form-control" rows="3" id="txtReasonCancellation"></textarea>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label" for="txtPersonInCharge">Persona</label>
+            <input class="form-control" id="txtPersonInCharge" />
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-success" onclick="cancelDelivery()">Si</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+  <div id="successToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <img src="~/images/check.png" class="rounded me-2" alt="..." width="25" height="25">
+      <strong id="successToastTitle" class="me-auto">Entrega cancelada</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div id="successToastMessage" class="toast-body">
+      La entrega ha sido cancelada con éxito
+    </div>
+  </div>
+</div>
+
+<!-- Error Toast -->
+<div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+  <div id="errorToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <img src="~/images/remove.png" class="rounded me-2" alt="..." width="25" height="25">
+      <strong class="me-auto">Error</strong>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div id="toastMessage" class="toast-body"></div>
+  </div>
+</div>
+
+@section Scripts {
+  <script>
+    let currentDeliveryId = "";
+    let cancelDeliveryModal = new bootstrap.Modal(document.getElementById('cancelDeliveryModal'));
+
+    let successToast = new bootstrap.Toast(document.getElementById('successToast'));
+    let successToastTitle = document.getElementById("successToastTitle");
+    let successToastMessage = document.getElementById("successToastMessage");
+
+    let errorToast = new bootstrap.Toast(document.getElementById('errorToast'));
+    let toastMessage = document.getElementById("toastMessage");
+
+    let txtReasonCancellation = document.getElementById("txtReasonCancellation");
+    let txtPersonInCharge = document.getElementById("txtPersonInCharge");
+
+    function isEmpty(str) {
+      return (!str || str.length === 0);
+    }
+
+    function isBlank(str) {
+      return (!str || /^\s*$/.test(str));
+    }
+
+    // Executes when the user clicks on 'Cancelar' 
+    function setDeliveryId(deliveryId) {
+      currentDeliveryId = deliveryId;
+    }
+
+    // Validates the fields Motivo and Persona aren't empties
+    function validateCancelForm() {
+      if (isEmpty(txtReasonCancellation.value)) {
+        toastMessage.innerHTML = 'El campo Motivo está vacío';
+        errorToast.show();
+        return false;
+      }
+
+      if (isEmpty(txtPersonInCharge.value)) {
+        toastMessage.innerHTML = 'El campo Persona está vacío';
+        errorToast.show();
+        return false;
+      }
+
+      return true;
+    }
+
+    // Calls API to cancel delivery
+    function cancelDelivery() {
+      if (validateCancelForm()) {
+        let model = {
+          ReasonCancellation: txtReasonCancellation.value,
+          PersonInCharge: txtPersonInCharge.value,
+          DeliveryId: currentDeliveryId
+        };
+
+        let url = "/Home/CancelDelivery";
+        ServerPOST(url, model, cancelDeliveryResponse);
+      }
+    }
+
+    // Executes as a function handler of the API
+    function cancelDeliveryResponse(data, status) {
+      let successTitle = 'Entrega cancelada';
+      let successMessage = 'La entrega ha sido cancelada con éxito';
+      generalResponse(data, status, successTitle, successMessage);
+
+      cancelDeliveryModal.hide();
+      delay(3000).then(() => window.location.reload());
+    }
+
+    function updateMinutosDTResponse(data, status) {
+      let successTitle = 'Tiempo estimado actualizado';
+      let successMessage = 'El tiempo estimado ha sido actualizada con éxito';
+      generalResponse(data, status, successTitle, successMessage);
+    }
+
+    function generalResponse(data, status, successTitle, successMessage) {
+      if (status) {
+        successToastTitle.innerHTML = successTitle;
+        successToastMessage.innerHTML = successMessage;
+        successToast.show();
+      } else {
+        toastMessage.innerHTML = data;
+        errorToast.show();
+      }
+    }
+
+    function delay(time) {
+      return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    function updateMinutosDT(storeId) {
+      let inputElem = document.getElementById("minutosDTInput");
+      let minutosDT = inputElem.value;
+
+      if (minutosDT == '') {
+        toastMessage.innerHTML = 'El campo Tiempo estimado está vacío';
+        errorToast.show();
+        return false;
+      }
+
+      let url = "/Home/UpdatePreparationTime?codRest=" + storeId + "&minutosDT=" + minutosDT;
+      ServerPOST(url, null, updateMinutosDTResponse);
+    }
+  </script>
+}

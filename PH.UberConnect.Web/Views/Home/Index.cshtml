@@ -1,0 +1,58 @@
+﻿@model HomeViewModel
+@{
+    ViewData["Title"] = "Elegir tienda";
+}
+
+<div class="card">
+    <h5 class="card-header">
+        Órdenes con solicitud de ENTREGA según estado
+    </h5>
+    <div class="card-body">
+        <form asp-controller="Home" method="post">
+            <div class="row">
+                <div class="col-3">
+                    <div class="mb-3">
+                        <label asp-for="StoreIdInputValue" class="form-label">Código restaurante</label>
+                        <input asp-for="StoreIdInputValue" class="form-control" onchange="inputOnChange(this.value)" />
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="mb-3">
+                        <label asp-for="StoreIdSelected" class="form-label">Restaurante</label>
+                        <select asp-for="StoreIdSelected" class="form-select" onchange="sltStoreOnChange()">
+                            @foreach (var store in Model.Stores)
+                            {
+                                <option value="@store.CodRest">@store.Descripcion</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-text">Selecciona el restaurante para ver las ENTREGAS.</div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary my-1">
+                        Ver ENTREGAS
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let storeIdSelectElem = document.getElementById("@Html.NameFor(e => e.StoreIdSelected)");
+        let storeIdInputValueElem = document.getElementById("@Html.NameFor(e => e.StoreIdInputValue)"); 
+
+        function inputOnChange(value) {
+            for (var i = 0; i < storeIdSelectElem.options.length; i++) {
+                if (storeIdSelectElem.options[i].value == value) {
+                    storeIdSelectElem.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+    </script>
+}

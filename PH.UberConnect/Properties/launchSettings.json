@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "PH.UberConnect": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Production"
+      }
+    }
+  }
+}
